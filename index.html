@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venda de Livros</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+        
+        .book-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .book-card.sold {
+            opacity: 0.6;
+            filter: grayscale(70%);
+        }
+        
+        .book-card.sold::after {
+            content: "VENDIDO";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            background-color: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            z-index: 2;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .book-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .book-info {
+            padding: 15px;
+        }
+        
+        .book-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .book-author {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .book-editora {
+            color: #95a5a6;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        .book-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .whatsapp-btn {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+        }
+        
+        .whatsapp-btn.sold {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        
+        .whatsapp-icon {
+            margin-right: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 50px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Venda de Livros</h1>
+            <div class="stats">
+                <div class="stat-item">Total: <span id="totalBooks">0</span> livros</div>
+                <div class="stat-item">Disponíveis: <span id="availableBooks">0</span></div>
+                <div class="stat-item">Vendidos: <span id="soldBooks">0</span></div>
+            </div>
+            <p class="subtitle">Livros usados em excelente estado. Todos os livros estão disponíveis para venda.</p>
+        </header>
+        
+        <div class="books-grid" id="booksGrid">
+            <!-- Livros serão inseridos aqui via JavaScript -->
+        </div>
+        
+        <footer>
+            <p>&copy; 2025 Venda de Livros. Todos os direitos reservados a Gabriel Araujo.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dados dos livros atualizados
+        // Para marcar um livro como vendido, altere vendido: false para vendido: true
+        const livros = [
+            {
+                titulo: "A Linguagem das Emoções",
+                autor: "Paul Ekman",
+                editora: "Lua de Papel",
+                preco: "R$ 40,00",
+                imagem: "src/imgs/linguagem-das-emoções.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Lugar Nenhum em Quadrinhos",
+                autor: "Neil Gaiman",
+                editora: "Vertigo",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/lugar-nenhum-em-quadrinhos.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Mar",
+                autor: "John Banville",
+                editora: "Biblioteca Azul",
+                preco: "R$ 40,00",
+                imagem: "src/imgs/o-mar.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Respire: Uma Vida em Movimento",
+                autor: "Rickson Gracie",
+                editora: "Harper Collins",
+                preco: "R$ 15,00",
+                imagem: "src/imgs/respire.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Dexter: A Mão Esquerda de Deus",
+                autor: "Jeff Lindsay",
+                editora: "Planeta",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/dexter.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Circo Mecânico Tresaulti – Limited Edition",
+                autor: "Genevieve Valentine",
+                editora: "Darkside",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/circo-mecanico-tresaulti.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Joyland",
+                autor: "Stephen King",
+                editora: "Suma",
+                preco: "R$ 10,00",
+                imagem: "src/imgs/joyland.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Sou Pessimo em Matemática",
+                autor: "Rafael Procopio",
+                editora: "Harper Collins",
+                preco: "R$ 15,00",
+                imagem: "src/imgs/sou-pessimo-em-matematica.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Espadachim de Carvão",
+                autor: "Affonso Solano",
+                editora: "Casa de Palavra",
+                preco: "R$ 10,00",
+                imagem: "src/imgs/espadachim-de-carvao.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Dicionário de Mitologia Nórdica",
+                autor: "John Langer (org.)",
+                editora: "Hedra",
+                preco: "R$ 80,00",
+                imagem: "src/imgs/dicionario-mitologia-nordica.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Mitologia Nórdica",
+                autor: "Neil Gaiman",
+                editora: "Intrínseca",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/mitologia-nordica.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Nórdicos: Os Melhores Contos e Lendas",
+                autor: "Vários Autores",
+                editora: "PandorgA",
+                preco: "R$ 20,00",
+                imagem: "src/imgs/nordicos.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Diários de Kurt Cobain",
+                autor: "Kurt Cobain",
+                editora: "Belas Letras",
+                preco: "R$ 75,00",
+                imagem: "src/imgs/kurt-cobain.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Salem",
+                autor: "Stephen King",
+                editora: "Suma",
+                preco: "R$ 70,00",
+                imagem: "src/imgs/salem.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Pulp",
+                autor: "Charles Bukowski",
+                editora: "L&PM Pocket",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/pulp.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Nietzsche: Um Guia Gráfico",
+                autor: "Laurence Gane",
+                editora: "Sextante",
+                preco: "R$ 20,00",
+                imagem: "src/imgs/nietzsche-guia-grafico.jpg",
+                vendido: false
+            },
+            {
+                titulo: "A Conspiração de Forty Acres",
+                autor: "Dwayne Alexander Smith",
+                editora: "Alta Novel",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/conspiracao-forty-acres.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Você Fica Tão Sozinho às Vezes Que Até Faz Sentido",
+                autor: "Charles Bukowski",
+                editora: "L&PM",
+                preco: "R$ 30,00",
+                imagem: "src/imgs/vc-fica-sozinho.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Pioneiros da Ficção Científica - Trinca.01",
+                autor: "Vários Autores",
+                editora: "Trinca",
+                preco: "R$ 60,00",
+                imagem: "src/imgs/pioneiros-ficcao.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Mito de Sísifo",
+                autor: "Albert Camus",
+                editora: "BestBolso",
+                preco: "R$ 10,00",
+                imagem: "src/imgs/mito-sisifo.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Ao Sul de Lugar Nenhum",
+                autor: "Charles Bukowski",
+                editora: "L&PM Pocket",
+                preco: "R$ 15,00",
+                imagem: "src/imgs/ao-sul-lugar-nenhum.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Alamut (Inspiração da Saga Assassin’s Creed)",
+                autor: "Vladimir Bartol",
+                editora: "Morro Branco",
+                preco: "R$ 50,00",
+                imagem: "src/imgs/alamut.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Contador de Histórias",
+                autor: "Dave Grohl",
+                editora: "Intrínseca",
+                preco: "R$ 40,00",
+                imagem: "src/imgs/contador-historias.jpg",
+                vendido: false
+            },
+            {
+                titulo: "O Príncipe",
+                autor: "Maquiavel",
+                editora: "Hunter Books",
+                preco: "R$ 15,00",
+                imagem: "src/imgs/principe.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Política Nós Também Sabemos Fazer",
+                autor: "Vários Autores",
+                editora: "Vozes Nobilis",
+                preco: "R$ 15,00",
+                imagem: "src/imgs/politica-nos-sabemos.jpg",
+                vendido: false
+            },
+            {
+                titulo: "Viagem à Demência dos Pássaros",
+                autor: "Alberto Pereira",
+                editora: "Isto Edições",
+                preco: "R$ 10,00",
+                imagem: "src/imgs/viagem-demencia-passaros.jpg",
+                vendido: false
+            }
+        ];
+
+        // Função para atualizar as estatísticas
+        function atualizarEstatisticas() {
+            const total = livros.length;
+            const vendidos = livros.filter(livro => livro.vendido).length;
+            const disponiveis = total - vendidos;
+            
+            document.getElementById('totalBooks').textContent = total;
+            document.getElementById('availableBooks').textContent = disponiveis;
+            document.getElementById('soldBooks').textContent = vendidos;
+        }
+
+        // Função para criar e adicionar os cards de livros
+        function criarCardsLivros() {
+            const booksGrid = document.getElementById('booksGrid');
+            const whatsappNumber = '5581933003209'; // Número do WhatsApp sem o +
+            
+            // Limpar grid antes de adicionar
+            booksGrid.innerHTML = '';
+            
+            livros.forEach((livro, index) => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                if (livro.vendido) {
+                    bookCard.classList.add('sold');
+                }
+                
+                const whatsappMessage = encodeURIComponent(`Olá! Gostaria de saber mais sobre o livro "${livro.titulo}" de ${livro.autor}.`);
+                const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+                
+                bookCard.innerHTML = `
+                    <img src="${livro.imagem}" alt="${livro.titulo}" class="book-image">
+                    <div class="book-info">
+                        <h3 class="book-title">${livro.titulo}</h3>
+                        <p class="book-author">${livro.autor}</p>
+                        <p class="book-editora">Editora: ${livro.editora}</p>
+                        <p class="book-price">${livro.preco}</p>
+                        <a href="${whatsappLink}" target="_blank" class="whatsapp-btn ${livro.vendido ? 'sold' : ''}" ${livro.vendido ? 'onclick="return false;"' : ''}>
+                            <span class="whatsapp-icon">💬</span> Mais Informações
+                        </a>
+                    </div>
+                `;
+                
+                booksGrid.appendChild(bookCard);
+            });
+            
+            // Atualizar estatísticas
+            atualizarEstatisticas();
+        }
+        
+        // Chamar a função para criar os cards quando a página carregar
+        document.addEventListener('DOMContentLoaded', criarCardsLivros);
+    </script>
+</body>
+</html>
